@@ -3,19 +3,16 @@ const app =  express();
 const connectDB = require('./db/connect');
 require('dotenv').config();
 
+const storeAPIrouter = require('./routes/storeApiRoutes');
+const unknownRoutes = require('./middleware/unknownRoutesHandler');
+const errorHandler = require('./middleware/error-handler');
 
+app.use(express.json());
 
-app.get('/', (req, res)=>{
-    res.send("Welcome to store API");
-})
+app.use('/api/v1/store', storeAPIrouter);
 
-
-
-
-
-
-
-
+app.use(unknownRoutes);
+app.use(errorHandler);
 
 
 
@@ -24,13 +21,14 @@ app.get('/', (req, res)=>{
 
 
 
-const portNo = 3001;
+
+
 
 const start = async () =>{
     try{
         await connectDB(process.env.MONGO_URI);
-        app.listen(portNo, ()=>{
-            console.log("Server Is Running On Port Number 3000");
+        app.listen(process.env.PORT, ()=>{
+            console.log("Server Is Running On Port Number "+ process.env.PORT);
         })
     }
     catch(error){
