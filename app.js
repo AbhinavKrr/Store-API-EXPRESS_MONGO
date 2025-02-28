@@ -3,25 +3,23 @@ const app =  express();
 const connectDB = require('./db/connect');
 require('dotenv').config();
 
-const storeAPIrouter = require('./routes/storeApiRoutes');
+const productRouter = require('./routes/productsRoutes');
 const unknownRoutes = require('./middleware/unknownRoutesHandler');
 const errorHandler = require('./middleware/error-handler');
 
 app.use(express.json());
 
-app.use('/api/v1/store', storeAPIrouter);
+
+// Routes
+app.get('/', (req, res) =>{
+    res.send('<h1>Store API</h1><a href="/api/v1/products">Products Route</a>');
+})
+
+app.use('/api/v1/products', productRouter);
+
 
 app.use(unknownRoutes);
 app.use(errorHandler);
-
-
-
-
-
-
-
-
-
 
 
 const start = async () =>{
@@ -32,7 +30,7 @@ const start = async () =>{
         })
     }
     catch(error){
-        console.log("Error Connecting to DataBase, Here is the error MSG" + error);
+        console.log("Error Connecting to DataBase, Here is the error MSG: " + error);
     }
 }
 
