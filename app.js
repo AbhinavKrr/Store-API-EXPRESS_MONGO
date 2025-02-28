@@ -3,6 +3,9 @@ const app =  express();
 const connectDB = require('./db/connect');
 require('dotenv').config();
 
+// AYSC WRAPPER MIDDLE WARE FUNCTIONANLITY IN THIS BELOW PACKAGE
+require('express-async-errors');
+
 const productRouter = require('./routes/productsRoutes');
 const unknownRoutes = require('./middleware/unknownRoutesHandler');
 const errorHandler = require('./middleware/error-handler');
