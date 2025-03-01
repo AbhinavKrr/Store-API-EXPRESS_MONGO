@@ -2,12 +2,12 @@ const products = require('../model/product');
 
 
 const getAllProductsStatic = async (req, res) => {
-    throw new Error("error ha pagal");
-    res.status(200).json({msg: "products testing route"});
+    res.status(200).json({msg: "products routes"});
 }
 
 const getAllProducts = async (req, res) =>{
-    res.status(200).json({msg: "products routes"});
+    const products_ = await products.find({});
+    res.status(200).json({msg:"Success", data:products_});
 }
 
 const createProduct = async (req, res) =>{
@@ -17,3 +17,4 @@ const createProduct = async (req, res) =>{
 
 
 module.exports = {getAllProductsStatic, getAllProducts, createProduct};
+

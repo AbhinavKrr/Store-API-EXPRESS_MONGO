@@ -33,4 +33,13 @@ const productSchema = new mongoose.Schema(
     }
 )
 
+
+
 module.exports = mongoose.model('Product', productSchema);
+
+
+// All objects in js have a constructor function -> its prototype has methods
+
+// Date -> constructor function -> Date.now() -> Date.prototype.now(); --> this is casted by mongoose -> same for other types
+
+// {}, class -> fake, constructor function any obejct in javescript->  TYPE, Class static methods in js is basically prototype method in js of that constructor
