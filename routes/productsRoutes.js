@@ -8,4 +8,6 @@ productRouter.route('/static').get(getAllProductsStatic);
 productRouter.route('/').post(createProduct);
 
 
+
+
 module.exports = productRouter;
