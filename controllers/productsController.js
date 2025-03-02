@@ -2,15 +2,16 @@ const Product = require('../model/product');
 
 
 const getAllProductsStatic = async (req, res) => {
-
-    const products = await Product.find({}).sort('name price');
+    // Select filter method returns documents with only those files which we pass + id
+    // Sorts filter method returns documents in asd or desd order acording to fields that we provide
+    const products = await Product.find({}).select('name price');
 
     res.status(200).json({msg:"Success", nbHits: products.length, data:products});
 }
 
 const getAllProducts = async (req, res) =>{
     // console.log(req.query);
-    const {featured, company, name, sort:sorting} = req.query;
+    const {featured, company, name, sort:sorting, fields} = req.query;
     const queryObj = {};
     
     if(featured){
@@ -27,7 +28,7 @@ const getAllProducts = async (req, res) =>{
     }
 
     let result = Product.find(queryObj);
-
+    // SORT
     if(sorting){
         const sortList = sorting.split(',').join(' ');
         result = result.sort(sortList);
@@ -35,8 +36,13 @@ const getAllProducts = async (req, res) =>{
     else{
         result = result.sort('createdAt');
     }
-    const products = await result;
+    //FIELDS
+    if(fields){
+        const fieldList = fields.split(',').join(' ');
+        result = result.select(fieldList);
+    }
 
+    const products = await result;
     res.status(200).json({msg:"Success",nbHits: products.length, data:products});
 }
 
