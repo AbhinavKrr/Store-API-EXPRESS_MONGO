@@ -2,21 +2,15 @@ const Product = require('../model/product');
 
 
 const getAllProductsStatic = async (req, res) => {
-    const search = 'ab';
-    const products = await Product.find({
-        // featured : 'true' //string converted to boolean type by mongoose then to json
-        // featured: true boolean 
-        // name: 'emperor bed'
-        name:{
-            $regex: search, $options: 'i'
-        }
-    });
+
+    const products = await Product.find({}).sort('name price');
+
     res.status(200).json({msg:"Success", nbHits: products.length, data:products});
 }
 
 const getAllProducts = async (req, res) =>{
     // console.log(req.query);
-    const {featured, company, name} = req.query;
+    const {featured, company, name, sort:sorting} = req.query;
     const queryObj = {};
     
     if(featured){
@@ -29,10 +23,20 @@ const getAllProducts = async (req, res) =>{
 
     if(name){
         queryObj.name = {$regex: name, $options: 'i'}
-        // $options : 'i' this is for mathing uppercase and lowercase
+        // $options : 'i' this is for matching uppercase and lowercase
     }
 
-    const products = await Product.find(queryObj);
+    let result = Product.find(queryObj);
+
+    if(sorting){
+        const sortList = sorting.split(',').join(' ');
+        result = result.sort(sortList);
+    }
+    else{
+        result = result.sort('createdAt');
+    }
+    const products = await result;
+
     res.status(200).json({msg:"Success",nbHits: products.length, data:products});
 }
 
