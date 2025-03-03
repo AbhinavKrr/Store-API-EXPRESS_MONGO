@@ -11,7 +11,7 @@ const getAllProductsStatic = async (req, res) => {
 
 const getAllProducts = async (req, res) =>{
     // console.log(req.query);
-    const {featured, company, name, sort:sorting, fields} = req.query;
+    const {featured, company, name, sort:sorting, fields, numericFilters} = req.query;
     const queryObj = {};
     
     if(featured){
@@ -27,7 +27,34 @@ const getAllProducts = async (req, res) =>{
         // $options : 'i' this is for matching uppercase and lowercase
     }
 
+    if(numericFilters){
+        const operatorMap = {
+            '>' : '$gt',
+            '>=' : '$gte',
+            '=' : '$eq',
+            '<' : '$lt',
+            '<=':'$lte'
+        }
+
+        const regEx = /\b(<|>|<=|>=|=)\b/g;
+        let filters = numericFilters.replace(regEx, (match)=>{
+            return `-${operatorMap[match]}-`
+        })
+        
+        const options = ['price','rating'];
+        filters = filters.split(',').forEach((item)=>{
+            const [field, operator, value] = item.split('-');
+            if(options.includes(field)){
+                queryObj[field] = {[operator]:Number(value)};
+            }
+        })
+    }   
+
+    console.log(queryObj);
+
+
     let result = Product.find(queryObj);
+
     // SORT
     if(sorting){
         const sortList = sorting.split(',').join(' ');
@@ -36,6 +63,7 @@ const getAllProducts = async (req, res) =>{
     else{
         result = result.sort('createdAt');
     }
+    
     //FIELDS
     if(fields){
         const fieldList = fields.split(',').join(' ');
